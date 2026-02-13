@@ -37,6 +37,18 @@ add_executable(${CMAKE_PROJECT_NAME})
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
 
+# FreeRTOS kernel integration
+set(FREERTOS_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS)
+set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "FreeRTOS portable layer")
+set(FREERTOS_HEAP 4 CACHE STRING "FreeRTOS heap implementation")
+
+add_library(freertos_config INTERFACE)
+target_include_directories(freertos_config INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
+)
+
+add_subdirectory(${FREERTOS_KERNEL_PATH} freertos_kernel)
+
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
@@ -63,6 +75,8 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
+    freertos_kernel
+    freertos_config
 
     # Add user defined libraries
 )
