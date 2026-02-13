@@ -38,7 +38,7 @@ add_executable(${CMAKE_PROJECT_NAME})
 add_subdirectory(cmake/stm32cubemx)
 
 # FreeRTOS kernel integration
-set(FREERTOS_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS)
+set(FREERTOS_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/RTOS/FreeRTOS-Kernel)
 set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "FreeRTOS portable layer")
 set(FREERTOS_HEAP 4 CACHE STRING "FreeRTOS heap implementation")
 
