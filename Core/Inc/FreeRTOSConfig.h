@@ -58,7 +58,5 @@
 #define INCLUDE_xTaskGetCurrentTaskHandle       1
 
 /* Map CMSIS core handlers to FreeRTOS port handlers. */
-#define xPortPendSVHandler                      PendSV_Handler
-#define vPortSVCHandler                         SVC_Handler
 
 #endif /* FREERTOS_CONFIG_H */

@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f4xx_hal.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -28,6 +27,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdint.h>
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 /* USER CODE END Includes */
 
@@ -69,12 +71,12 @@ void uprintf(UART_HandleTypeDef* huart, const char* format, ...)
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+static void task1Handler(void* args);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+TaskHandle_t task1_Handle;
 /* USER CODE END 0 */
 
 /**
@@ -114,14 +116,14 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  uprintf(&huart1, "Hello world\n");
-
+  xTaskCreate(task1Handler, "task1", 256, NULL, 2, &task1_Handle);
+  vTaskStartScheduler();
+  
   while (1)
   {
-    uprintf(&huart1, "tick : %d\n",uwTick);
-    HAL_Delay(1);
+
     /* USER CODE END WHILE */
-    
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -180,7 +182,32 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void task1Handler(void* args){
+  (void)args;
 
+  for(;;){
+    uprintf(&huart1,"task1()\n");
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+}
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+  (void)xTask;
+  (void)pcTaskName;
+  taskDISABLE_INTERRUPTS();
+  for (;;)
+  {
+  }
+}
+
+void vApplicationMallocFailedHook(void)
+{
+  taskDISABLE_INTERRUPTS();
+  for (;;)
+  {
+  }
+}
 /* USER CODE END 4 */
 
 /**
